@@ -5,5 +5,5 @@ test: lint
 
 lint:
 	@"$${CHAOS_RIB_LAUNCHER:?Use the rib launcher.}" \
-	  --repo "$${CHAOS_CHECKOUT:?Set CHAOS_CHECKOUT.}" --ribs "$$PWD/ribs.conf" --rib linting \
+	  --repo "$${CHAOS_CHECKOUT:?Set CHAOS_CHECKOUT.}" --ribs "$$PWD/ribs.conf" --rib linting --required \
 	  -- make -f Makefile test

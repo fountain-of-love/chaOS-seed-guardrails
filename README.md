@@ -1,20 +1,16 @@
 # chaOS-seed guardrails
 
-chaOS-seed fetches a pinned archive of this rib and calls `make test`.
-The `lint` target passes `make -f Makefile test` as the command to run
-inside the fetched linting archive.
-After linting passes, `run-tests.sh` delegates to `make test` in the
-project snapshot. The two implementations own their rules and
-dependencies. A failed target blocks the calling commit.
+chaOS-seed calls this rib's `make test` target. The `lint` target passes
+the guardrails manifest and `make -f Makefile test` to the shared rib
+launcher. After linting passes, `run-tests.sh` calls `make test` in the
+project snapshot. A failed target blocks the calling commit.
 
-## Publishing and delegation
+## Child dependencies
 
-Publish each rib as a commit-pinned gzip tar archive with one top-level
-directory and a root `Makefile` that provides a phony `test` target.
-Pin the linting archive in `ribs.conf` using the `linting` name and `shared`
-scope. Pin the parent archive in chaOS-seed's manifest as `guardrails`.
-A development archive can supply a local `file:///` pin in its manifest.
+Guardrails owns the linting pin in `ribs.conf`. Its Makefile supplies
+this manifest to the launcher, which resolves the pinned commit from
+a matching sibling checkout or from its HTTPS URL.
 
-The launcher provides the project snapshot and scope to both ribs.
-When testing moves into a sibling rib, the same `make test` contract
-can be used to call that rib and its language-specific implementations.
+The launcher is available as `CHAOS_RIB_LAUNCHER`. It passes the project
+snapshot and test scope through to linting. chaOS-seed pins guardrails
+as its direct dependency.
